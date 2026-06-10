@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CareTalk 360 Healthcare Design System */
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 210 50% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 50% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 50% 10%;
+
+    --primary: 205 100% 27%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 205 100% 27%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 15% 45%;
+
+    --accent: 205 85% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 205 100% 27%;
+
+    --radius: 0.375rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 205 100% 27%;
+    --sidebar-primary: 205 100% 27%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 205 85% 40%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 20% 92%;
+    --sidebar-ring: 205 100% 27%;
+
+    --header-background: 205 100% 27%;
+    --header-foreground: 0 0% 100%;
+
+    --table-header: 210 20% 96%;
+    --table-border: 210 20% 88%;
+    --table-row-hover: 210 30% 97%;
+  }
+
+  .dark {
+    --background: 210 30% 8%;
+    --foreground: 210 20% 98%;
+
+    --card: 210 30% 12%;
+    --card-foreground: 210 20% 98%;
+
+    --popover: 210 30% 12%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 205 85% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 30% 18%;
+    --secondary-foreground: 210 20% 98%;
+
+    --muted: 210 30% 18%;
+    --muted-foreground: 210 15% 60%;
+
+    --accent: 205 85% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 60% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 80% 45%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 210 30% 22%;
+    --input: 210 30% 22%;
+    --ring: 205 85% 50%;
+
+    --sidebar-background: 210 30% 10%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 205 85% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 205 70% 40%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 30% 18%;
+    --sidebar-ring: 205 85% 50%;
+
+    --header-background: 210 30% 12%;
+    --header-foreground: 210 20% 98%;
+
+    --table-header: 210 30% 15%;
+    --table-border: 210 30% 22%;
+    --table-row-hover: 210 30% 14%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+}
+
+@layer components {
+  .sidebar-link {
+    @apply flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-colors;
+    @apply text-sidebar-foreground hover:bg-sidebar-accent/10;
+  }
+
+  .sidebar-link-active {
+    @apply bg-sidebar-accent/15 text-sidebar-accent font-semibold;
+  }
+
+  .filter-label {
+    @apply text-sm font-medium text-foreground mb-1.5 block;
+  }
+
+  .table-action-btn {
+    @apply p-1.5 rounded-md transition-colors hover:bg-muted;
+  }
+}
