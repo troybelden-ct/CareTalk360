@@ -1,6 +1,6 @@
 # CT360_EXTRACTION_CONTRACT.md
-**Version:** v0.1 (draft)
-**Status:** PROPOSED — pending Troy sign-off
+**Version:** v1.0
+**Status:** APPROVED
 **Scope:** Recurring as-built extraction of the CareTalk360 design app (initially the Lovable export) into versioned design-lock markdown files.
 **Owner:** Troy | **Executor:** Claude Code
 
@@ -18,7 +18,7 @@ CareTalk360 follows a **build → test → lock → extract → PRD** loop: Clau
 
 | Input | Location |
 |---|---|
-| Design app | `~/Desktop/Development/CareTalk/Code/CareTalk360/app/` (initially the Lovable export; evolves via Claude Code) |
+| Design app | `~/Desktop/CTH/Code/CareTalk360/app/` (initially the Lovable export; evolves via Claude Code) |
 | Design-lock tag | `design-lock/<module>-v<N>` git tag — extraction always runs against a tag, never loose HEAD |
 | This contract | `docs/contracts/CT360_EXTRACTION_CONTRACT.md` |
 
@@ -84,7 +84,7 @@ Same header block, then: **Purpose / Props & Inputs / UI Inventory / Validation 
 3. **No `ui/` primitives.** shadcn components are infrastructure, not design.
 4. **Mock data is evidence, not truth.** Record mock field names verbatim; CTH source-of-truth mapping is a flagged guess for later validation against the real schema.
 5. **Forms are the crown jewels.** The clinical form suite (HRA, HPI/ROS/Exam/Assessment/Plan, PHQ-2/9, vitals modals, med/diagnosis review) gets the most careful entity and validation extraction — these map directly to the formData/FormDefinitions world.
-6. **One commit per file.** Commit message: `extract(as-built): PAGE_Dashboard v0.1`. Keeps review diffs atomic.
+6. **One commit per extraction pass.** Commit message: `extract(as-built): full pass at design-lock/baseline-v1` or `extract(as-built): incremental pass at design-lock/<module>-v<N>`. The git tag pins the snapshot; per-file commits are unnecessary overhead.
 7. **No schema drift.** If the schema doesn't fit a page, flag it in Open Questions and follow the schema anyway. Contract changes go through Troy, version-bumped here.
 
 ## 7. Modes & pass order
