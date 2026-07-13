@@ -3,26 +3,23 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import AppointmentDetails from "./pages/AppointmentDetails";
-import ProviderDetails from "./pages/ProviderDetails";
+import StateDetails from "./pages/StateDetails";
 import SearchPatient from "./pages/SearchPatient";
 import DoctorAppointments from "./pages/DoctorAppointments";
 import UserList from "./pages/UserList";
+import ClientList from "./pages/ClientList";
 import UserTypes from "./pages/UserTypes";
 import CreateUser from "./pages/CreateUser";
 import EditUser from "./pages/EditUser";
 import EditUserType from "./pages/EditUserType";
-import StateDetails from "./pages/StateDetails";
 import CreatePatient from "./pages/CreatePatient";
-import CareNavAppointments from "./pages/CareNavAppointments";
-import NurseAppointments from "./pages/NurseAppointments";
-import SupervisorAppointments from "./pages/SupervisorAppointments";
-import Forms from "./pages/Forms";
 import AppointmentTypes from "./pages/AppointmentTypes";
 import FormSetup from "./pages/FormSetup";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Placeholder from "./pages/Placeholder";
 
 const queryClient = new QueryClient();
 
@@ -33,27 +30,70 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Dashboard (top-level items) */}
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointment-details" element={<AppointmentDetails />} />
-          <Route path="/provider-details" element={<ProviderDetails />} />
           <Route path="/state-details" element={<StateDetails />} />
-          <Route path="/appointments" element={<Index />} />
-          <Route path="/search-patient" element={<SearchPatient />} />
-          <Route path="/doctor-appointments" element={<DoctorAppointments />} />
+
+          {/* Client Admin */}
+          <Route path="/client-list" element={<ClientList />} />
+          <Route path="/client-list/add" element={<Placeholder title="Add Client" />} />
+          <Route path="/client-list/edit/:id" element={<Placeholder title="Edit Client" />} />
+          <Route path="/client-list/programs/:id" element={<Placeholder title="Client Programs" />} />
+          <Route path="/eligibility-lists" element={<Placeholder title="Eligibility Lists" />} />
+
+          {/* User Admin */}
           <Route path="/user-list" element={<UserList />} />
           <Route path="/user-types" element={<UserTypes />} />
-          <Route path="/edit-user-type/:id" element={<EditUserType />} />
           <Route path="/create-user" element={<CreateUser />} />
           <Route path="/edit-user/:id" element={<EditUser />} />
+          <Route path="/edit-user-type/:id" element={<EditUserType />} />
+
+          {/* Patients */}
+          <Route path="/search-patient" element={<SearchPatient />} />
           <Route path="/create-patient" element={<CreatePatient />} />
-          <Route path="/care-nav-appointments" element={<CareNavAppointments />} />
-          <Route path="/nurse-appointments" element={<NurseAppointments />} />
-          <Route path="/supervisor-appointments" element={<SupervisorAppointments />} />
-          <Route path="/forms" element={<Forms />} />
-          <Route path="/appointment-types" element={<AppointmentTypes />} />
+
+          {/* Reporting */}
+          <Route path="/appointment-report" element={<Placeholder title="Appointment Report" />} />
+          <Route path="/physician-interval" element={<Placeholder title="Physician-interval" />} />
+          <Route path="/physician-schedules" element={<Placeholder title="Physician-schedules" />} />
+          <Route path="/physician-capacity" element={<Placeholder title="Physician Capacity" />} />
+          <Route path="/snapbp-report" element={<Placeholder title="SnapBP Report" />} />
+          <Route path="/status-report" element={<Placeholder title="Status Report" />} />
+          <Route path="/availability-report" element={<Placeholder title="Availability Report" />} />
+
+          {/* Doctor */}
+          <Route path="/doctor-appointments" element={<DoctorAppointments />} />
+          <Route path="/doctor-availability" element={<Placeholder title="My Availability" />} />
+          <Route path="/doctor-profile" element={<Placeholder title="My Profile" />} />
+
+          {/* Settings */}
+          <Route path="/diseases" element={<Placeholder title="Diseases List" />} />
+          <Route path="/s3-import-logs" element={<Placeholder title="S3 Import Logs" />} />
+          <Route path="/form-import" element={<Placeholder title="Forms import" />} />
+          <Route path="/sms-logs" element={<Placeholder title="SMS logs" />} />
+          <Route path="/sms-templates" element={<Placeholder title="SMS Templates" />} />
+          <Route path="/doses-logs" element={<Placeholder title="Doses Logs" />} />
+          <Route path="/doses" element={<Placeholder title="Doses" />} />
+          <Route path="/ccda-management" element={<Placeholder title="CCDA Management" />} />
+          <Route path="/timezone" element={<Placeholder title="TimeZone" />} />
+          <Route path="/system-logs" element={<Placeholder title="System Logs" />} />
+          <Route path="/error-logs" element={<Placeholder title="Error Logs" />} />
           <Route path="/form-setup" element={<FormSetup />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/form-creator" element={<Placeholder title="Form Creator" />} />
+          <Route path="/gap-type" element={<Placeholder title="GAP Type" />} />
+          <Route path="/appointment-types" element={<AppointmentTypes />} />
+          <Route path="/trigger-webhooks" element={<Placeholder title="Trigger WebHooks" />} />
+          <Route path="/webhooks-actions" element={<Placeholder title="WebHooks Actions" />} />
+          <Route path="/webhooks-logs" element={<Placeholder title="WebHooks Logs" />} />
+          <Route path="/service-actions" element={<Placeholder title="Service Actions" />} />
+          <Route path="/client-subdomain" element={<Placeholder title="Client SubDomain" />} />
+          <Route path="/admin-settings" element={<Placeholder title="Admin Settings" />} />
+
+          {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

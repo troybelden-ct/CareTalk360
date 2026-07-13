@@ -1,27 +1,25 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, X } from "lucide-react";
 
 interface NavItem {
   label: string;
   href?: string;
-  active?: boolean;
   children?: NavItem[];
 }
 
 const navItems: NavItem[] = [
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Appts. Details", href: "/appointment-details" },
   {
-    label: "Dashboard",
-    href: "/dashboard",
+    label: "Client Admin",
     children: [
-      { label: "Appt. Details", href: "/appointment-details" },
-      { label: "Provider Details", href: "/provider-details" },
-      { label: "State Details", href: "/state-details" },
+      { label: "Client List", href: "/client-list" },
+      { label: "Eligibility Lists", href: "/eligibility-lists" },
     ],
   },
   {
-    label: "Users",
+    label: "User Admin",
     children: [
       { label: "User List", href: "/user-list" },
       { label: "User Types", href: "/user-types" },
@@ -33,207 +31,191 @@ const navItems: NavItem[] = [
     children: [
       { label: "Search Patient", href: "/search-patient" },
       { label: "Create Patient", href: "/create-patient" },
-      { label: "Monitor Patients", href: "#" },
     ],
   },
   {
     label: "Reporting",
     children: [
-      { label: "Appointment Report", href: "/appointments" },
-      { label: "Physician-interval", href: "#" },
-      { label: "Physician-schedules", href: "#" },
-      { label: "Physician Capacity", href: "#" },
+      { label: "Appointment Report", href: "/appointment-report" },
+      { label: "Physician-interval", href: "/physician-interval" },
+      { label: "Physician-schedules", href: "/physician-schedules" },
+      { label: "Physician Capacity", href: "/physician-capacity" },
+      { label: "SnapBP Report", href: "/snapbp-report" },
+      { label: "Status Report", href: "/status-report" },
+      { label: "Availability Report", href: "/availability-report" },
     ],
   },
   {
-    label: "Patient Support",
+    label: "Doctor",
     children: [
-      { label: "Support Tickets", href: "#" },
-    ],
-  },
-  {
-    label: "Nurses",
-    children: [
-      { label: "Appointments-N", href: "/nurse-appointments" },
-    ],
-  },
-  {
-    label: "Care Navigation",
-    children: [
-      { label: "Cases", href: "/care-nav-appointments" },
-    ],
-  },
-  {
-    label: "Monitoring",
-    children: [
-      { label: "Admin", href: "#" },
-    ],
-  },
-  {
-    label: "Appointments",
-    children: [
-      { label: "Appointments-S", href: "/supervisor-appointments" },
-      { label: "Appointments-P", href: "/doctor-appointments" },
+      { label: "My Appointments", href: "/doctor-appointments" },
+      { label: "My Availability", href: "/doctor-availability" },
+      { label: "My Profile", href: "/doctor-profile" },
     ],
   },
   {
     label: "Settings",
     children: [
-      { label: "Appt. Admin", href: "#", children: [
-        { label: "Appointment Types", href: "/appointment-types" },
-        { label: "Forms", href: "#" },
-      ]},
-      { label: "Client Admin", href: "#", children: [
-        { label: "Client List", href: "#" },
-        { label: "Eligibility List", href: "#" },
-      ]},
-      { label: "Monitoring Admin", href: "#" },
-      { label: "System Admin", href: "#", children: [
-        { label: "SMS Admin", href: "#" },
-        { label: "Email Admin", href: "#" },
-      ]},
-      { label: "Forms", href: "/form-setup" },
-      { label: "User Admin", href: "#" },
+      { label: "Diseases List", href: "/diseases" },
+      { label: "S3 Import Logs", href: "/s3-import-logs" },
+      { label: "Forms import", href: "/form-import" },
+      { label: "SMS logs", href: "/sms-logs" },
+      { label: "SMS Templates", href: "/sms-templates" },
+      { label: "Doses Logs", href: "/doses-logs" },
+      { label: "Doses", href: "/doses" },
+      { label: "CCDA Management", href: "/ccda-management" },
+      { label: "TimeZone", href: "/timezone" },
+      { label: "System Logs", href: "/system-logs" },
+      { label: "Error Logs", href: "/error-logs" },
+      { label: "Form Setup", href: "/form-setup" },
+      { label: "Form Creator", href: "/form-creator" },
+      { label: "GAP Type", href: "/gap-type" },
+      { label: "Appointment List", href: "/appointment-types" },
+      { label: "Trigger WebHooks", href: "/trigger-webhooks" },
+      { label: "WebHooks Actions", href: "/webhooks-actions" },
+      { label: "WebHooks Logs", href: "/webhooks-logs" },
+      { label: "Service Actions", href: "/service-actions" },
+      { label: "Client SubDomain", href: "/client-subdomain" },
+      { label: "Admin Settings", href: "/admin-settings" },
     ],
   },
 ];
 
-interface NavSectionProps {
-  item: NavItem;
-  defaultOpen?: boolean;
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-const SubNavItem = ({ child, childActive, hasSubChildren }: { child: NavItem; childActive: boolean; hasSubChildren: boolean }) => {
+const NavSection = ({ item }: { item: NavItem }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [subOpen, setSubOpen] = useState(false);
 
-  return (
-    <div>
-      <button
-        onClick={() => {
-          if (hasSubChildren) {
-            setSubOpen(!subOpen);
-          } else if (child.href && child.href !== "#") {
-            navigate(child.href);
-          }
-        }}
-        className={cn(
-          "sidebar-link pl-4 w-full",
-          childActive && "sidebar-link-active"
-        )}
-      >
-        <span className={cn(
-          "w-1.5 h-1.5 rounded-full mr-2",
-          childActive ? "bg-warning" : "bg-sidebar-primary"
-        )} />
-        {child.label}
-        {hasSubChildren && (
-          subOpen ? <ChevronDown className="h-3 w-3 ml-auto text-sidebar-foreground" /> : <ChevronRight className="h-3 w-3 ml-auto text-sidebar-foreground" />
-        )}
-      </button>
-      {subOpen && hasSubChildren && (
-        <div className="ml-4 mt-0.5 space-y-0.5">
-          {child.children?.map((sub, i) => {
-            const subActive = sub.href && sub.href !== "#" && location.pathname === sub.href;
-            return (
-              <button
-                key={i}
-                onClick={() => sub.href && sub.href !== "#" ? navigate(sub.href) : undefined}
-                className={cn(
-                  "sidebar-link pl-4 w-full text-xs",
-                  subActive && "sidebar-link-active"
-                )}
-              >
-                <span className={cn(
-                  "w-1 h-1 rounded-full mr-2",
-                  subActive ? "bg-warning" : "bg-sidebar-primary"
-                )} />
-                {sub.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
+  const isChildActive = item.children?.some(
+    (c) => c.href && location.pathname === c.href
   );
-};
-const NavSection = ({ item, defaultOpen = false }: NavSectionProps) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const isChildActive = item.children?.some(c => c.href && c.href !== "#" && location.pathname === c.href);
-  const isTopLevelActive = item.href && location.pathname === item.href;
-
-  const [isOpen, setIsOpen] = useState(defaultOpen || !!isChildActive);
+  const isDirectActive = item.href && location.pathname === item.href;
 
   const hasChildren = item.children && item.children.length > 0;
-
-  const handleClick = () => {
-    if (item.href) {
-      navigate(item.href);
-    }
-    if (hasChildren) {
-      setIsOpen(!isOpen);
-    }
-  };
+  const [isOpen, setIsOpen] = useState<boolean>(!!isChildActive);
 
   return (
-    <div className="mb-1">
+    <div style={{ margin: "8px 0" }}>
+      {/* Group heading or direct link */}
       <button
-        onClick={handleClick}
-        className={cn(
-          "w-full flex items-center justify-between px-3 py-2 text-sm font-semibold",
-          "text-sidebar-primary hover:bg-sidebar-accent/5 rounded-md transition-colors",
-          isTopLevelActive && "bg-sidebar-accent/10"
-        )}
+        type="button"
+        onClick={() => {
+          if (item.href) navigate(item.href);
+          if (hasChildren) setIsOpen(!isOpen);
+        }}
+        className="w-full flex items-center justify-between bg-transparent border-none cursor-pointer"
+        style={{
+          padding: 0,
+          fontSize: "21px",
+          fontWeight: 500,
+          color: isDirectActive ? "#ff9f1c" : "#1d4c88",
+        }}
       >
         <span>{item.label}</span>
-        {hasChildren ? (
-          isOpen ? (
-            <ChevronDown className="h-4 w-4 text-sidebar-foreground" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-sidebar-foreground" />
-          )
-        ) : null}
+        {hasChildren && (
+          <ChevronDown
+            style={{
+              width: "14px",
+              height: "14px",
+              color: "#1d4c88",
+              transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)",
+              transition: "transform 0.2s ease",
+              flexShrink: 0,
+            }}
+          />
+        )}
       </button>
-      
+
+      {/* Sub-items */}
       {isOpen && hasChildren && (
-        <div className="ml-2 mt-1 space-y-0.5">
-          {item.children?.map((child, index) => {
-            const childActive = child.href && child.href !== "#" && location.pathname === child.href;
-            const hasSubChildren = child.children && child.children.length > 0;
+        <ul
+          style={{
+            listStyleType: "disc",
+            paddingLeft: "25px",
+            margin: "6px 0 0 0",
+          }}
+        >
+          {item.children!.map((child, index) => {
+            const active = child.href && location.pathname === child.href;
             return (
-              <SubNavItem key={index} child={child} childActive={!!childActive} hasSubChildren={!!hasSubChildren} />
+              <li
+                key={index}
+                style={{
+                  color: active ? "#ff9f1c" : "#1d4c88",
+                  marginBottom: "4px",
+                }}
+              >
+                <a
+                  href={child.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (child.href) navigate(child.href);
+                  }}
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    color: active ? "#ff9f1c" : "#1d4c88",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {child.label}
+                </a>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </div>
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
   return (
-    <aside className="w-56 min-h-screen bg-sidebar border-r border-sidebar-border flex flex-col">
-      {/* Logo */}
-      <div className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-1">
-          <span className="text-xl font-bold text-sidebar-primary italic">
-            ~CareTalk~
-          </span>
-          <span className="text-xs text-sidebar-accent font-semibold tracking-wider ml-1">360</span>
-        </div>
+    <aside
+      className="flex flex-col bg-white"
+      style={{
+        width: "230px",
+        minWidth: "230px",
+        minHeight: "100vh",
+        borderRight: "2px solid #e0dddd",
+        display: isOpen ? "flex" : "none",
+      }}
+    >
+      {/* Logo area */}
+      <div
+        className="flex items-center justify-between"
+        style={{ padding: "16px 25px" }}
+      >
+        <img
+          src="/images/logo.jpg"
+          alt="CareTalk 360 logo"
+          style={{ maxWidth: "170px", height: "auto" }}
+        />
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="md:hidden bg-transparent border-none cursor-pointer p-1"
+            aria-label="Close sidebar"
+          >
+            <X style={{ width: "20px", height: "20px", color: "#1d4c88" }} />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 overflow-y-auto">
+      <nav
+        className="flex-1 overflow-y-auto"
+        style={{ padding: "0 25px" }}
+      >
         {navItems.map((item, index) => (
-          <NavSection 
-            key={index} 
-            item={item} 
-            defaultOpen={false} 
-          />
+          <NavSection key={index} item={item} />
         ))}
       </nav>
     </aside>
