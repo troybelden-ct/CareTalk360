@@ -11,7 +11,15 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        success: "bg-success text-success-foreground hover:bg-success/90",
+        // Hover darkens via filter rather than the usual `bg-success/90`.
+        // --success is CTH_STATUS.success #137D41 (5.20:1 with white). At /90 it
+        // composites over a light surface to #2B8A54 = 4.32:1, which drops the
+        // white label below the WCAG AA 4.5:1 floor. brightness(.9) moves the
+        // fill to #11713B and the label to #E6E6E6 = 4.89:1, still AA.
+        // GL-003 §10.5 defines no pressed/darker step for status tokens
+        // (§10.1a grants one for navy only), so no new hex is introduced here.
+        success:
+          "bg-success text-success-foreground hover:brightness-90 transition-[color,background-color,filter]",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",

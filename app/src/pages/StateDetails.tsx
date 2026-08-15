@@ -1,13 +1,7 @@
 import MainLayout from "@/components/layout/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const US_STATES = [
   "AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN",
@@ -18,7 +12,13 @@ const US_STATES = [
 
 const StateDetails = () => {
   const [view, setView] = useState<"daily" | "weekly" | "monthly">("daily");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [offset, setOffset] = useState(0);
+
+  const selectedDate = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - offset * 30);
+    return d;
+  }, [offset]);
 
   const getDailyData = (st: string, date: Date) => {
     const seed = st.charCodeAt(0) + st.charCodeAt(1) + date.getDate() + date.getMonth() * 31;
@@ -75,103 +75,220 @@ const StateDetails = () => {
   const periodLabel = view === "daily" ? "Today" : view === "weekly" ? "This Week" : "MTD";
 
   const dateLabel = useMemo(() => {
-    if (view === "daily") return format(selectedDate, "PPP");
+    const opts: Intl.DateTimeFormatOptions = { month: "short", day: "numeric", year: "numeric" };
+    if (view === "daily") return selectedDate.toLocaleDateString("en-US", opts);
     if (view === "weekly") {
       const start = new Date(selectedDate);
       start.setDate(start.getDate() - start.getDay());
       const end = new Date(start);
       end.setDate(start.getDate() + 6);
-      return `${format(start, "MMM d")} – ${format(end, "MMM d, yyyy")}`;
+      return `${start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} – ${end.toLocaleDateString("en-US", opts)}`;
     }
-    return format(selectedDate, "MMMM yyyy");
+    return selectedDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   }, [view, selectedDate]);
 
   return (
-    <MainLayout>
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-primary underline underline-offset-4">
+    <MainLayout
+      breadcrumbs={[
+        { label: "Dashboard", href: "/dashboard" },
+        { label: "State Details" },
+      ]}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <h1
+          style={{
+            fontSize: "24px",
+            fontWeight: 700,
+            color: "#1d4c88",
+            textDecoration: "underline",
+            textUnderlineOffset: "4px",
+            margin: 0,
+          }}
+        >
           State Distribution
         </h1>
 
-        <div className="grid grid-cols-4 gap-4">
+        {/* Stat cards */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "16px",
+          }}
+        >
           {[
-            { label: "Scheduled", value: totals.totalScheduled },
-            { label: "Completed", value: totals.totalCompleted },
-            { label: "High State", value: totals.highState },
-            { label: "Low State", value: totals.lowState },
+            { label: `Scheduled (${periodLabel})`, value: totals.totalScheduled },
+            { label: `Completed (${periodLabel})`, value: totals.totalCompleted },
+            { label: "Highest State", value: totals.highState },
+            { label: "Lowest State", value: totals.lowState },
           ].map((item) => (
-            <div key={item.label} className="bg-card p-4 rounded-lg border border-border text-center">
-              <div className="text-3xl font-bold text-primary">{item.value}</div>
-              <div className="text-sm text-muted-foreground mt-1">{item.label}</div>
+            <div
+              key={item.label}
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid #e0e0e0",
+                borderRadius: "10px",
+                padding: "20px 16px",
+                textAlign: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "32px",
+                  fontWeight: 700,
+                  color: "#1a3a5c",
+                }}
+              >
+                {item.value}
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "#666",
+                  marginTop: "4px",
+                }}
+              >
+                {item.label}
+              </div>
             </div>
           ))}
         </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+        {/* Chart */}
+        <div
+          style={{
+            backgroundColor: "#fff",
+            border: "1px solid #e0e0e0",
+            borderRadius: "10px",
+            padding: "20px 16px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          }}
+        >
+          {/* Chart header */}
+          <div
+            className="flex items-center justify-between"
+            style={{ marginBottom: "16px" }}
+          >
             <div className="flex items-center gap-3">
-              <CardTitle className="text-lg">Appts Per Day by State</CardTitle>
-              <div className="flex items-center rounded-md border border-border overflow-hidden">
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "#1a1a1a",
+                  margin: 0,
+                }}
+              >
+                Appts Per Day by State
+              </h2>
+              <div
+                className="flex items-center"
+                style={{
+                  border: "1px solid #ccc",
+                  borderRadius: "6px",
+                  overflow: "hidden",
+                }}
+              >
                 {(["daily", "weekly", "monthly"] as const).map((v) => (
-                  <Button
+                  <button
                     key={v}
-                    variant={view === v ? "default" : "ghost"}
-                    size="sm"
-                    className="rounded-none h-7 text-xs capitalize"
+                    type="button"
                     onClick={() => setView(v)}
+                    className="border-none cursor-pointer capitalize transition-colors"
+                    style={{
+                      padding: "4px 12px",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      backgroundColor: view === v ? "#1a3a5c" : "#fff",
+                      color: view === v ? "#fff" : "#555",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (view !== v) {
+                        e.currentTarget.style.backgroundColor = "#f0f0f0";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (view !== v) {
+                        e.currentTarget.style.backgroundColor = "#fff";
+                      }
+                    }}
                   >
                     {v}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">{dateLabel}</span>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <CalendarIcon className="h-4 w-4 mr-1" />
-                    Pick Date
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={(d) => d && setSelectedDate(d)}
-                    initialFocus
-                    className={cn("p-3 pointer-events-auto")}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <ComposedChart data={stateChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="state" tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" interval={0} angle={-45} textAnchor="end" height={40} />
-                <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload?.length) return null;
-                    const d = payload[0].payload;
-                    return (
-                      <div className="bg-card border border-border rounded-lg p-3 shadow-md">
-                        <p className="font-medium text-sm">{label}</p>
-                        <p className="text-sm" style={{ color: "hsl(210, 80%, 70%)" }}>Scheduled: {d.scheduled}</p>
-                        <p className="text-sm" style={{ color: "hsl(210, 80%, 35%)" }}>Completed: {d.completed}</p>
-                      </div>
-                    );
+              <span style={{ fontSize: "13px", color: "#666" }}>{dateLabel}</span>
+              <button
+                type="button"
+                onClick={() => setOffset((o) => o + 1)}
+                className="flex items-center cursor-pointer transition-colors"
+                style={{
+                  padding: "6px 14px",
+                  border: "1px solid #ccc",
+                  borderRadius: "6px",
+                  backgroundColor: "#fff",
+                  color: "#333",
+                  fontSize: "13px",
+                }}
+              >
+                <ChevronLeft style={{ width: "14px", height: "14px", marginRight: "4px" }} />
+                Back
+              </button>
+              {offset > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setOffset((o) => o - 1)}
+                  className="flex items-center cursor-pointer transition-colors"
+                  style={{
+                    padding: "6px 14px",
+                    border: "1px solid #ccc",
+                    borderRadius: "6px",
+                    backgroundColor: "#fff",
+                    color: "#333",
+                    fontSize: "13px",
                   }}
-                />
-                <Legend />
-                <Bar dataKey="completed" stackId="appts" name="Completed" fill="hsl(210, 80%, 35%)" radius={[0, 0, 0, 0]} />
-                <Bar dataKey="remaining" stackId="appts" name="Scheduled" fill="hsl(210, 80%, 70%)" radius={[4, 4, 0, 0]} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                >
+                  Forward
+                  <ChevronRight style={{ width: "14px", height: "14px", marginLeft: "4px" }} />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <ResponsiveContainer width="100%" height={350}>
+            <ComposedChart data={stateChartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis dataKey="state" tick={{ fontSize: 9 }} stroke="#999" interval={0} angle={-45} textAnchor="end" height={40} />
+              <YAxis tick={{ fontSize: 12 }} stroke="#999" />
+              <Tooltip
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0].payload;
+                  return (
+                    <div
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #e0e0e0",
+                        borderRadius: "8px",
+                        padding: "12px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      <p style={{ fontWeight: 500, fontSize: "14px", margin: "0 0 4px", color: "#1a1a1a" }}>{label}</p>
+                      <p style={{ fontSize: "13px", margin: "0 0 2px", color: "#666" }}>Scheduled: {d.scheduled}</p>
+                      <p style={{ fontSize: "13px", margin: 0, color: "#1a3a5c" }}>Completed: {d.completed}</p>
+                    </div>
+                  );
+                }}
+              />
+              <Legend />
+              <Bar dataKey="completed" stackId="appts" name="Completed" fill="#1a3a5c" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="remaining" stackId="appts" name="Scheduled" fill="#b8c9dc" radius={[4, 4, 0, 0]} />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </MainLayout>
   );

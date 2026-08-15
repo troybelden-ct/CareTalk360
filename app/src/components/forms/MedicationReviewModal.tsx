@@ -86,7 +86,7 @@ const MedicationReviewModal = ({ open, onOpenChange }: MedicationReviewModalProp
           </div>
           <div className="text-right">
             <div className="text-xs text-muted-foreground">Completion</div>
-            <div className={`text-lg font-bold ${completionPct === 100 ? "text-green-600" : "text-primary"}`}>
+            <div className={`text-lg font-bold ${completionPct === 100 ? "text-success" : "text-primary"}`}>
               {completionPct}%
             </div>
           </div>

@@ -231,7 +231,8 @@ const Forms = () => {
               ))}
               <Button
                 size="sm"
-                className="text-xs h-7 px-4 bg-green-500 hover:bg-green-600 text-white"
+                variant="success"
+                className="text-xs h-7 px-4"
                 onClick={() => setCompleteModalOpen(true)}
               >
                 Complete
@@ -251,11 +252,15 @@ const Forms = () => {
                   key={tab}
                   onClick={() => handleTabClick(tab)}
                   className={cn(
-                    "py-2 text-sm border-b-2 transition-colors",
+                    // `filter` is in the transition list because the reviewed-tab
+                    // hover darkens via brightness() rather than a second green —
+                    // GL-003 §10.5 defines no pressed step for status tokens.
+                    // Without it the hover snaps while its siblings ease.
+                    "py-2 text-sm border-b-2 transition-[color,background-color,border-color,filter]",
                     activeTab === tab
                       ? "border-accent text-accent font-bold"
                       : reviewedTabs[tab]
-                        ? "border-transparent text-green-500 font-bold hover:text-green-600"
+                        ? "border-transparent text-success font-bold hover:brightness-90"
                         : "border-transparent text-muted-foreground hover:text-foreground"
                   )}
                 >

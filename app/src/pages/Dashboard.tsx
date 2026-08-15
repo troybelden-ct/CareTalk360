@@ -467,7 +467,7 @@ const Dashboard = () => {
               stroke="#333"
               strokeWidth={2}
               dot={false}
-              type="monotone"
+              type="linear"
             />
           )}
         </ComposedChart>

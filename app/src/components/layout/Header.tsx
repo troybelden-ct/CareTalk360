@@ -189,7 +189,7 @@ const Header = ({
       </header>
 
       {/* Breadcrumb row -- separate from header */}
-      <div
+      {breadcrumbs.length > 0 && <div
         className="flex items-center px-4"
         style={{
           height: "40px",
@@ -238,7 +238,7 @@ const Header = ({
             </span>
           ))}
         </nav>
-      </div>
+      </div>}
     </>
   );
 };

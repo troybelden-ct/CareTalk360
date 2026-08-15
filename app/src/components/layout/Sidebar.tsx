@@ -9,8 +9,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Appts. Details", href: "/appointment-details" },
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    children: [
+      { label: "Appts. Details", href: "/appointment-details" },
+      { label: "State Details", href: "/state-details" },
+    ],
+  },
   {
     label: "Client Admin",
     children: [
@@ -76,6 +82,7 @@ const navItems: NavItem[] = [
       { label: "WebHooks Logs", href: "/webhooks-logs" },
       { label: "Service Actions", href: "/service-actions" },
       { label: "Client SubDomain", href: "/client-subdomain" },
+      { label: "HEDIS Measures", href: "/hedis-measures" },
       { label: "Admin Settings", href: "/admin-settings" },
     ],
   },
@@ -110,7 +117,7 @@ const NavSection = ({ item }: { item: NavItem }) => {
         className="w-full flex items-center justify-between bg-transparent border-none cursor-pointer"
         style={{
           padding: 0,
-          fontSize: "21px",
+          fontSize: "16px",
           fontWeight: 500,
           color: isDirectActive ? "#ff9f1c" : "#1d4c88",
         }}
@@ -192,11 +199,25 @@ const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
         className="flex items-center justify-between"
         style={{ padding: "16px 25px" }}
       >
-        <img
-          src="/images/logo.jpg"
-          alt="CareTalk 360 logo"
-          style={{ maxWidth: "170px", height: "auto" }}
-        />
+        <div>
+          <img
+            src="/images/logo.jpg"
+            alt="CareTalk 360 logo"
+            style={{ maxWidth: "170px", height: "auto" }}
+          />
+          <div
+            style={{
+              fontSize: "12px",
+              fontWeight: 500,
+              color: "#000",
+              letterSpacing: "0.5px",
+              marginTop: "2px",
+              paddingLeft: "2px",
+            }}
+          >
+            Dev. Site R&amp;D
+          </div>
+        </div>
         {onClose && (
           <button
             type="button"

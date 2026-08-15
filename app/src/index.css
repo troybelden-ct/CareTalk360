@@ -30,7 +30,11 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 71% 35%;
+    /* CTH_STATUS.success "Field" #137D41 — GL-003 §10.5. SSOT: src/lib/design-tokens.ts
+       Round-trip asserted in src/lib/design-tokens.test.ts. Do not hand-edit.
+       Replaces 142 71% 35% — approximately the retired Tailwind green-600,
+       3.30:1 on white, which failed WCAG AA. See RETIRED in design-tokens.ts. */
+    --success: 146 73.6% 28.2%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -84,7 +88,10 @@
     --destructive: 0 62% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 60% 40%;
+    /* Same Field value as :root. GL-003 §12 O-7 — CTH has no dark-mode palette
+       yet, so there is no sanctioned darker/lighter success to shift to. Held
+       at the one ratified value rather than improvising a second one. */
+    --success: 146 73.6% 28.2%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 80% 45%;

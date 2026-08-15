@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# EPRC sandbox package — contains live GeoComm sandbox credentials
+# (docx + Postman collection). Never commit.
+docs/20251126 EPRC Sandbox API v.11 3/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

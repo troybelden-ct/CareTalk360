@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import StateDetails from "./pages/StateDetails";
@@ -19,7 +19,15 @@ import AppointmentTypes from "./pages/AppointmentTypes";
 import FormSetup from "./pages/FormSetup";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import EligibilityLists from "./pages/EligibilityLists";
+import EditClient from "./pages/EditClient";
 import Placeholder from "./pages/Placeholder";
+import AppointmentReport from "./pages/AppointmentReport";
+import PhysicianInterval from "./pages/PhysicianInterval";
+import ClientPrograms from "./pages/ClientPrograms";
+import EditProgram from "./pages/EditProgram";
+import PatientAppointment from "./pages/PatientAppointment";
+import HedisMeasuresSettings from "./pages/HedisMeasuresSettings";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +36,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
@@ -41,9 +49,10 @@ const App = () => (
           {/* Client Admin */}
           <Route path="/client-list" element={<ClientList />} />
           <Route path="/client-list/add" element={<Placeholder title="Add Client" />} />
-          <Route path="/client-list/edit/:id" element={<Placeholder title="Edit Client" />} />
-          <Route path="/client-list/programs/:id" element={<Placeholder title="Client Programs" />} />
-          <Route path="/eligibility-lists" element={<Placeholder title="Eligibility Lists" />} />
+          <Route path="/client-list/edit/:id" element={<EditClient />} />
+          <Route path="/client-list/programs/:id" element={<ClientPrograms />} />
+          <Route path="/client-list/programs/:clientId/edit/:programId" element={<EditProgram />} />
+          <Route path="/eligibility-lists" element={<EligibilityLists />} />
 
           {/* User Admin */}
           <Route path="/user-list" element={<UserList />} />
@@ -57,8 +66,9 @@ const App = () => (
           <Route path="/create-patient" element={<CreatePatient />} />
 
           {/* Reporting */}
-          <Route path="/appointment-report" element={<Placeholder title="Appointment Report" />} />
-          <Route path="/physician-interval" element={<Placeholder title="Physician-interval" />} />
+          <Route path="/appointment-report" element={<AppointmentReport />} />
+          <Route path="/patient-appointment/:id" element={<PatientAppointment />} />
+          <Route path="/physician-interval" element={<PhysicianInterval />} />
           <Route path="/physician-schedules" element={<Placeholder title="Physician-schedules" />} />
           <Route path="/physician-capacity" element={<Placeholder title="Physician Capacity" />} />
           <Route path="/snapbp-report" element={<Placeholder title="SnapBP Report" />} />
@@ -91,12 +101,13 @@ const App = () => (
           <Route path="/webhooks-logs" element={<Placeholder title="WebHooks Logs" />} />
           <Route path="/service-actions" element={<Placeholder title="Service Actions" />} />
           <Route path="/client-subdomain" element={<Placeholder title="Client SubDomain" />} />
+          <Route path="/hedis-measures" element={<HedisMeasuresSettings />} />
           <Route path="/admin-settings" element={<Placeholder title="Admin Settings" />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

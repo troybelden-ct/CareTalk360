@@ -18,7 +18,7 @@ Tracks every sidebar menu item, its route, BETA equivalent, and build status.
 | Menu Item | Dev Route | BETA Route | Status |
 |---|---|---|---|
 | Client List | `/client-list` | `/dashboard/administration/clientsList` | BUILT |
-| Eligibility Lists | `/eligibility-lists` | `/dashboard/administration/client-eligibility` | PLACEHOLDER |
+| Eligibility Lists | `/eligibility-lists` | `/dashboard/administration/client-eligibility` | BUILT |
 
 ## User Admin
 
@@ -39,8 +39,8 @@ Tracks every sidebar menu item, its route, BETA equivalent, and build status.
 
 | Menu Item | Dev Route | BETA Route | Status |
 |---|---|---|---|
-| Appointment Report | `/appointment-report` | `/dashboard/administration/completed-appointment` | PLACEHOLDER |
-| Physician-interval | `/physician-interval` | `/dashboard/administration/physician-interval-state` | PLACEHOLDER |
+| Appointment Report | `/appointment-report` | `/dashboard/administration/completed-appointment` | BUILT |
+| Physician-interval | `/physician-interval` | `/dashboard/administration/physician-interval-state` | BUILT |
 | Physician-schedules | `/physician-schedules` | `/dashboard/administration/Physician-schedules` | PLACEHOLDER |
 | Physician Capacity | `/physician-capacity` | `/dashboard/administration/physician-Capacity` | PLACEHOLDER |
 | SnapBP Report | `/snapbp-report` | `/dashboard/administration/snapbp-report` | PLACEHOLDER |
@@ -89,6 +89,9 @@ Tracks every sidebar menu item, its route, BETA equivalent, and build status.
 | Edit User Type | `/edit-user-type/:id` | `/dashboard/administration/user-types/:id` | BUILT |
 | State Details | `/state-details` | `/dashboard/appointmentsByState` | BUILT |
 | Provider Details | `/provider-details` | _(provider detail view)_ | BUILT |
+| Edit Client | `/client-list/edit/:id` | `/dashboard/administration/clientsList/client/:id` | BUILT |
+| Client Programs | `/client-list/programs/:id` | `/dashboard/administration/clientsprograms/:clientId` | BUILT |
+| Edit Program | `/client-list/programs/:clientId/edit/:programId` | `/dashboard/administration/clientsprograms/:clientId/programs/:programId` | BUILT |
 
 ---
 
@@ -96,6 +99,6 @@ Tracks every sidebar menu item, its route, BETA equivalent, and build status.
 
 | Status | Count |
 |---|---|
-| BUILT | 15 |
-| PLACEHOLDER | 32 |
-| **Total** | **47** |
+| BUILT | 21 |
+| PLACEHOLDER | 27 |
+| **Total** | **48** |
