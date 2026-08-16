@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import {
   Dialog,
@@ -75,6 +75,16 @@ const PSAP_LINK_FOCUS_CSS = `
  */
 const EmergencyModal = ({ open, onOpenChange, patient }: EmergencyModalProps) => {
   const [psapState, setPsapState] = useState<PsapViewState>({ status: "loading" });
+  const [copied, setCopied] = useState(false);
+  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear any pending "Copied!" reset timer on unmount so we never call
+  // setState after the modal (or its owning page) is gone.
+  useEffect(() => {
+    return () => {
+      if (copyResetTimeoutRef.current) clearTimeout(copyResetTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -83,6 +93,7 @@ const EmergencyModal = ({ open, onOpenChange, patient }: EmergencyModalProps) =>
     const controller = new AbortController();
 
     setPsapState({ status: "loading" });
+    setCopied(false);
 
     fetchPsap({ signal: controller.signal })
       .then((result) => {
@@ -116,6 +127,24 @@ const EmergencyModal = ({ open, onOpenChange, patient }: EmergencyModalProps) =>
       : "911";
 
   const handleCall911 = () => {
+    // Copy first — synchronously kick off the write before the `tel:`
+    // navigation below, so the dialer handoff can't interrupt it. The
+    // Clipboard API can reject (permissions, insecure context, unsupported
+    // browser); swallow that via the rejection handler so it never surfaces
+    // as an unhandled promise rejection, and just skip the confirmation.
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(call911Number).then(
+        () => {
+          setCopied(true);
+          if (copyResetTimeoutRef.current) clearTimeout(copyResetTimeoutRef.current);
+          copyResetTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
+        },
+        () => {
+          // Clipboard write blocked/unavailable — fail silently, dial still proceeds.
+        },
+      );
+    }
+
     window.location.href = `tel:${call911Number}`;
   };
 
@@ -245,23 +274,34 @@ const EmergencyModal = ({ open, onOpenChange, patient }: EmergencyModalProps) =>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <button
-            type="button"
-            aria-label={`Call ${call911Number === "911" ? "911" : `dispatch at ${call911Number}`} emergency services`}
-            onClick={handleCall911}
-            style={{
-              backgroundColor: CTH_STATUS.danger,
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              padding: "6px 16px",
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Call 911
-          </button>
+          <div className="flex flex-col items-end gap-1">
+            <button
+              type="button"
+              aria-label={`Call ${call911Number === "911" ? "911" : `dispatch at ${call911Number}`} emergency services`}
+              onClick={handleCall911}
+              style={{
+                backgroundColor: CTH_STATUS.danger,
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                padding: "6px 16px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Call 911
+            </button>
+            <span
+              style={{
+                fontSize: 11,
+                color: copied ? CTH_STATUS.success : UI_NEUTRAL.textMuted,
+              }}
+              aria-live="polite"
+            >
+              {copied ? "Copied!" : "Clicking copies the number to your clipboard."}
+            </span>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
